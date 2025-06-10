@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Limpiar contenedor') {
+        stage('Limpiar contenedor anterior') {
             steps {
                 sh '''
                     docker stop api-eva2 || true
@@ -12,15 +12,20 @@ pipeline {
             }
         }
 
-        stage('Construir imagen') {
+        stage('Construir nueva imagen') {
             steps {
-                sh 'docker build -t fastapi-eva2 .'
+                sh '''
+                    cd app
+                    docker build -t fastapi-eva2 .
+                '''
             }
         }
 
         stage('Ejecutar contenedor') {
             steps {
-                sh 'docker run -d -p 8000:8000 --name api-eva2 fastapi-eva2'
+                sh '''
+                    docker run -d -p 8000:8000 --name api-eva2 fastapi-eva2
+                '''
             }
         }
     }
